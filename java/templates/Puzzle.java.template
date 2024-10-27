@@ -1,0 +1,17 @@
+package packagename;
+
+import java.io.IOException;
+
+import ch.neukom.advent2024.util.InputResourceReader;
+
+public class ClassName {
+    public static void main(String[] args) throws IOException {
+        try (InputResourceReader reader = new InputResourceReader(ClassName.class)) {
+            run(reader);
+        }
+    }
+
+    private static void run(InputResourceReader reader) {
+
+    }
+}
