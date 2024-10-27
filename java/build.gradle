@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 plugins {
     id 'java'
     id 'idea'
@@ -18,7 +20,7 @@ dependencies {
     implementation "com.google.code.gson:gson:${gsonVersion}"
 
     testImplementation 'org.testng:testng:7.8.0'
-    testImplementation 'com.google.truth:truth:1.1.5'
+    testImplementation 'com.google.truth:truth:1.4.4'
 }
 
 test {
@@ -34,7 +36,9 @@ tasks.register('setup-java-puzzle') {
         mkdir srcFolder
         def resourcesFolder = [sourceSets.main.resources.srcDirs[0].canonicalPath, packageName].join(File.separator)
         mkdir resourcesFolder
-        new File([resourcesFolder, 'input'].join(File.separator)).write('')
+
+        def input = getPuzzleInput(puzzleDay)
+        new File([resourcesFolder, 'input'].join(File.separator)).write(input)
         new File([resourcesFolder, 'test'].join(File.separator)).write('')
 
         def puzzleTemplate = new File(['templates', 'Puzzle.java.template'].join(File.separator))
@@ -44,5 +48,17 @@ tasks.register('setup-java-puzzle') {
                 .replace('packagename', packageName.replace(File.separator, '.'))
         new File([srcFolder, 'Part1.java'].join(File.separator)).write(puzzleTemplate.replace('ClassName', 'Part1'))
         new File([srcFolder, 'Part2.java'].join(File.separator)).write(puzzleTemplate.replace('ClassName', 'Part2'))
+    }
+}
+
+private static String getPuzzleInput(String puzzleDay) {
+    String sessionKey = new File('.session-key').text.trim()
+    if (sessionKey != null && !sessionKey.isEmpty()) {
+        def puzzleInputUrl = "https://adventofcode.com/2024/day/%s/input".formatted(puzzleDay)
+        def inputConnection = new URI(puzzleInputUrl).toURL().openConnection()
+        inputConnection.addRequestProperty("Cookie", "session=%s".formatted(sessionKey))
+        return new BufferedReader(new InputStreamReader(inputConnection.getInputStream())).lines().collect(Collectors.joining("\n"))
+    } else {
+        return ''
     }
 }
