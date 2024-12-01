@@ -1,24 +1,25 @@
 package ch.neukom.advent2024.day1;
 
 import ch.neukom.advent2024.util.InputResourceReader;
+import com.google.common.base.Splitter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.function.Consumer;
 
 public class Util {
+    private static final Splitter WHITESPACE_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
+
     private Util() {
     }
 
     public static void loadValues(InputResourceReader reader,
-                                  Collection<Long> leftValues,
-                                  Collection<Long> rightValues) {
+                                  Consumer<Long> leftConsumer,
+                                  Consumer<Long> rightConsumer) {
         reader.readInput()
-            .map(line -> line.split(" "))
-            .map(parts -> Arrays.stream(parts).filter(part -> !part.isEmpty()).map(Long::valueOf).toList())
-            .map(parts -> new Tuple(parts.getFirst(), parts.getLast()))
+            .map(line -> WHITESPACE_SPLITTER.splitToStream(line).mapToLong(Long::valueOf).toArray())
+            .map(numbers -> new Tuple(numbers[0], numbers[1]))
             .forEach(tuple -> {
-                leftValues.add(tuple.left());
-                rightValues.add(tuple.right());
+                leftConsumer.accept(tuple.left());
+                rightConsumer.accept(tuple.right());
             });
     }
 

@@ -4,9 +4,8 @@ import ch.neukom.advent2024.util.InputResourceReader;
 import com.google.common.collect.Streams;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import static ch.neukom.advent2024.day1.Util.loadValues;
 
@@ -18,11 +17,9 @@ public class Part1 {
     }
 
     private static void run(InputResourceReader reader) {
-        List<Long> leftValues = new ArrayList<>();
-        List<Long> rightValues = new ArrayList<>();
-        loadValues(reader, leftValues, rightValues);
-        leftValues.sort(Comparator.naturalOrder());
-        rightValues.sort(Comparator.naturalOrder());
+        Queue<Long> leftValues = new PriorityQueue<>();
+        Queue<Long> rightValues = new PriorityQueue<>();
+        loadValues(reader, leftValues::add, rightValues::add);
         long sum = Streams.zip(
             leftValues.stream(),
             rightValues.stream(),
