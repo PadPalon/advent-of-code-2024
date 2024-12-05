@@ -83,15 +83,44 @@ public class Part2 {
         } else if (doesFollowRules(update, rules)) {
             return Optional.of(update);
         } else {
-            return update.stream()
-                .map(startingPage -> tryMutation(update, rules, startingPage))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+            Optional<List<Long>> any = update.stream()
+                .map(current -> findPossibleUpdates(update, List.of(current), rules))
+                .filter(o -> o.isPresent())
+                .map(o -> o.get())
                 .findAny();
+
+            return Optional.empty();
+//            return update.stream()
+//                .map(startingPage -> tryMutation(update, rules, startingPage))
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .findAny();
         }
     }
 
+    private static Optional<List<Long>> findPossibleUpdates(List<Long> update, List<Long> soFar, Multimap<Long, Long> rules) {
+        List<List<Long>> list = rules.get(soFar.getFirst())
+            .stream()
+            .filter(n -> update.contains(n))
+            .filter(n -> !soFar.contains(n))
+            .map(n -> (List<Long>) ImmutableList.<Long>builder()
+                .addAll(soFar)
+                .add(n)
+                .build())
+            .toList();
+        for (List<Long> longs : list) {
+            if (longs.size() == update.size()) {
+                return Optional.of(longs);
+            } else {
+                return findPossibleUpdates(update, longs, rules);
+            }
+        }
+        return Optional.empty();
+    }
+
     private static Optional<List<Long>> tryMutation(List<Long> update, Multimap<Long, Long> rules, Long startingPage) {
+        int size = update.size();
+
         List<Long> availablePages = copyListRemoveElement(update, startingPage);
         return rules.get(startingPage)
             .stream()
