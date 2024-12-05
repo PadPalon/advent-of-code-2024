@@ -34,14 +34,7 @@ public class Part1 {
 
         List<Long> middlePages = Lists.newArrayList();
         for (List<Long> update : updates) {
-            boolean isOrdered = true;
-            for (int index = 0; index < update.size(); index++) {
-                Long currentPage = update.get(index);
-                if (!doesFollowRules(update, index, rules.get(currentPage))) {
-                    isOrdered = false;
-                    break;
-                }
-            }
+            boolean isOrdered = doesFollowRules(update, rules);
             if (isOrdered) {
                 middlePages.add(update.get(update.size() / 2));
             }
@@ -49,6 +42,18 @@ public class Part1 {
 
         long sum = middlePages.stream().mapToLong(Long::longValue).sum();
         System.out.printf("The sum of middle pages is %s", sum);
+    }
+
+    private static boolean doesFollowRules(List<Long> update, Multimap<Long, Long> rules) {
+        boolean isOrdered = true;
+        for (int index = 0; index < update.size(); index++) {
+            Long currentPage = update.get(index);
+            if (!doesFollowRules(update, index, rules.get(currentPage))) {
+                isOrdered = false;
+                break;
+            }
+        }
+        return isOrdered;
     }
 
     private static boolean doesFollowRules(List<Long> update,

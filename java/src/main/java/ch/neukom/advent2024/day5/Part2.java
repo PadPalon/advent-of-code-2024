@@ -3,6 +3,7 @@ package ch.neukom.advent2024.day5;
 import ch.neukom.advent2024.util.InputResourceReader;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
@@ -44,35 +45,26 @@ public class Part2 {
             }
         }
 
-        List<List<Long>> orderedUpdates = Lists.newArrayList();
-        for (List<Long> unorderedUpdate : unorderedUpdates) {
-            for (Long startingPage : unorderedUpdate) {
-                List<Long> availablePages = Lists.newCopyOnWriteArrayList(unorderedUpdate);
-                availablePages.remove(startingPage);
-                List<Long> newOrdering = Lists.newArrayList();
-                newOrdering.add(startingPage);
+        long sum = unorderedUpdates.stream()
+            .map(update -> findOrderedUpdate(update, rules))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .mapToLong(update -> update.get(update.size() / 2))
+            .sum();
 
-                Long currentPage = startingPage;
-                while (!availablePages.isEmpty()) {
-                    Optional<Long> nextPageOptional = rules.get(currentPage)
-                        .stream()
-                        .filter(availablePages::contains)
-                        .findAny();
-                    if (nextPageOptional.isPresent()) {
-                        Long nextPage = nextPageOptional.get();
-                        newOrdering.add(nextPage);
-                        availablePages.remove(nextPage);
-                        currentPage = nextPage;
-                    }
-                }
+        System.out.printf("The sum of middle pages is %s", sum);
+    }
 
-                if (newOrdering.size() == updates.size()) {
-                    orderedUpdates.add(newOrdering);
-                }
+    private static boolean doesFollowRules(List<Long> update, Multimap<Long, Long> rules) {
+        boolean isOrdered = true;
+        for (int index = 0; index < update.size(); index++) {
+            Long currentPage = update.get(index);
+            if (!doesFollowRules(update, index, rules.get(currentPage))) {
+                isOrdered = false;
+                break;
             }
         }
-
-        System.out.println();
+        return isOrdered;
     }
 
     private static boolean doesFollowRules(List<Long> update,
@@ -83,5 +75,55 @@ public class Part2 {
             .map(update::indexOf)
             .filter(nextIndex -> nextIndex >= 0)
             .allMatch(nextIndex -> nextIndex > index);
+    }
+
+    private static Optional<List<Long>> findOrderedUpdate(List<Long> update, Multimap<Long, Long> rules) {
+        if (update.size() <= 1) {
+            return Optional.of(update);
+        } else if (doesFollowRules(update, rules)) {
+            return Optional.of(update);
+        } else {
+            return update.stream()
+                .map(startingPage -> tryMutation(update, rules, startingPage))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny();
+        }
+    }
+
+    private static Optional<List<Long>> tryMutation(List<Long> update, Multimap<Long, Long> rules, Long startingPage) {
+        List<Long> availablePages = copyListRemoveElement(update, startingPage);
+        return rules.get(startingPage)
+            .stream()
+            .filter(availablePages::contains)
+            .map(nextPage -> {
+                ImmutableList.Builder<Long> builder = ImmutableList.<Long>builder()
+                    .add(nextPage);
+                availablePages.stream().filter(page -> !page.equals(nextPage)).forEach(builder::add);
+                return builder.build();
+            })
+            .map(newUpdate -> findOrderedUpdate(newUpdate, rules))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(newUpdate -> {
+                ImmutableList.Builder<Long> builder = ImmutableList.<Long>builder()
+                    .add(startingPage);
+                newUpdate.forEach(builder::add);
+                return (List<Long>) builder.build();
+            })
+            .filter(newUpdate -> doesFollowRules(newUpdate, rules))
+            .findAny();
+    }
+
+    private static List<Long> copyListRemoveFirst(List<Long> source) {
+        List<Long> result = Lists.newCopyOnWriteArrayList(source);
+        result.removeFirst();
+        return result;
+    }
+
+    private static List<Long> copyListRemoveElement(List<Long> source, Long element) {
+        List<Long> result = Lists.newCopyOnWriteArrayList(source);
+        result.remove(element);
+        return result;
     }
 }
