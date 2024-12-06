@@ -1,6 +1,6 @@
 package ch.neukom.advent2024.day6;
 
-import ch.neukom.advent2024.util.InputArrayReader;
+import ch.neukom.advent2024.util.inputreaders.InputArrayReader;
 import ch.neukom.advent2024.util.data.Direction;
 import ch.neukom.advent2024.util.data.Position;
 

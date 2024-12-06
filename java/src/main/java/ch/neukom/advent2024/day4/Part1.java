@@ -1,7 +1,7 @@
 package ch.neukom.advent2024.day4;
 
-import ch.neukom.advent2024.util.InputResourceReader;
 import ch.neukom.advent2024.util.data.Position;
+import ch.neukom.advent2024.util.inputreaders.InputMapReader;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,23 +12,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ch.neukom.advent2024.util.characterMap.CharacterMapUtil.LineDirection.*;
-import static ch.neukom.advent2024.util.characterMap.CharacterMapUtil.buildCharacterMap;
 import static ch.neukom.advent2024.util.characterMap.CharacterMapUtil.getLinePositions;
 
 public class Part1 {
     public static final String SEARCH_STRING = "XMAS";
 
     public static void main(String[] args) throws IOException {
-        try (InputResourceReader reader = new InputResourceReader(Part1.class)) {
+        try (InputMapReader reader = new InputMapReader(Part1.class)) {
             run(reader);
         }
     }
 
-    private static void run(InputResourceReader reader) {
+    private static void run(InputMapReader reader) {
         int height = (int) reader.getLineCount();
         int width = reader.getFirstLine().length();
 
-        Map<Position, Character> characterMap = buildCharacterMap(reader);
+        Map<Position, Character> characterMap = reader.readIntoMap();
 
         long xmasCount = getLinePositions(width, height, VERTICAL, HORIZONTAL, DIAGONAL)
             .map(positions -> buildPositionString(positions, characterMap))

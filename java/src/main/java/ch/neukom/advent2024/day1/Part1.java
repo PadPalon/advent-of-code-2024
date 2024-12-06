@@ -1,6 +1,6 @@
 package ch.neukom.advent2024.day1;
 
-import ch.neukom.advent2024.util.InputResourceReader;
+import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 import com.google.common.collect.Streams;
 
 import java.io.IOException;

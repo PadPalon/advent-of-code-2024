@@ -1,4 +1,4 @@
-package ch.neukom.advent2024.util;
+package ch.neukom.advent2024.util.inputreaders;
 
 import com.google.common.collect.Streams;
 

@@ -2,7 +2,7 @@ package packagename;
 
 import java.io.IOException;
 
-import ch.neukom.advent2024.util.InputResourceReader;
+import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 
 public class ClassName {
     public static void main(String[] args) throws IOException {

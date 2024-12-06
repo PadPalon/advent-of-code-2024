@@ -1,6 +1,6 @@
 package ch.neukom.advent2024.util.characterMap;
 
-import ch.neukom.advent2024.util.InputResourceReader;
+import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 import ch.neukom.advent2024.util.data.Position;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
@@ -73,16 +73,21 @@ public class CharacterMapUtil {
     }
 
     public static Map<Position, Character> buildCharacterMap(InputResourceReader reader) {
+        return buildCharacterMap(reader, character -> character);
+    }
+
+    public static <T> Map<Position, T> buildCharacterMap(InputResourceReader reader,
+                                                         Function<Character, T> transformer) {
         int height = (int) reader.getLineCount();
         int width = reader.getFirstLine().length();
 
         List<String> lines = reader.readInput().toList();
-        Map<Position, Character> characterMap = Maps.newHashMap();
+        Map<Position, T> characterMap = Maps.newHashMap();
         for (int y = 0; y < height; y++) {
             String line = lines.get(y);
             for (int x = 0; x < width; x++) {
                 Character character = line.charAt(x);
-                characterMap.put(new Position(x, y), character);
+                characterMap.put(new Position(x, y), transformer.apply(character));
             }
         }
         return characterMap;

@@ -1,6 +1,6 @@
 package ch.neukom.advent2024.day2;
 
-import ch.neukom.advent2024.util.InputResourceReader;
+import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 
 import java.io.IOException;
 import java.util.Arrays;
