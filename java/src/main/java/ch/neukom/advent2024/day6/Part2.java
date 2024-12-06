@@ -1,6 +1,7 @@
 package ch.neukom.advent2024.day6;
 
 import ch.neukom.advent2024.util.InputArrayReader;
+import ch.neukom.advent2024.util.data.Direction;
 import ch.neukom.advent2024.util.data.Position;
 
 import java.io.IOException;
@@ -59,12 +60,12 @@ public class Part2 {
         Set<PatrolStep> steps = new HashSet<>();
         steps.add(new PatrolStep(guardPosition, guardDirection));
 
-        while (positionInsideMap(guardPosition, width, height)) {
-            Position nextPosition = getNextPosition(guardPosition, guardDirection);
-            if (positionInsideMap(nextPosition, width, height)) {
+        while (guardPosition.isInside(width, height)) {
+            Position nextPosition = guardPosition.move(guardDirection);
+            if (nextPosition.isInside(width, height)) {
                 Boolean hasObstacle = facilityMap[nextPosition.y()][nextPosition.x()];
                 if (hasObstacle) {
-                    guardDirection = turnRight(guardDirection);
+                    guardDirection = guardDirection.turnRight();
                 } else {
                     guardPosition = nextPosition;
                     if (steps.contains(new PatrolStep(guardPosition, guardDirection))) {
