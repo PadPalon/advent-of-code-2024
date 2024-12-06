@@ -39,36 +39,16 @@ public class Part2 {
 
     private static List<Long> findOrderedUpdate(List<Long> update, Multimap<Long, Long> rules) {
         return update.stream()
-            .map(value -> new RuleLong(value, rules))
-            .sorted()
-            .map(RuleLong::getValue)
+            .sorted((left, right) -> {
+                if (rules.get(left).contains(right)) {
+                    return -1;
+                }
+                if (rules.get(right).contains(left)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
             .toList();
-    }
-
-    public static class RuleLong implements Comparable<RuleLong> {
-
-        private final Long value;
-        private final Multimap<Long, Long> rules;
-
-        public RuleLong(Long value, Multimap<Long, Long> rules) {
-            this.value = value;
-            this.rules = rules;
-        }
-
-        @Override
-        public int compareTo(RuleLong o) {
-            if (rules.get(value).contains(o.getValue())) {
-                return -1;
-            }
-            if (rules.get(o.getValue()).contains(value)) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        public Long getValue() {
-            return value;
-        }
     }
 }
