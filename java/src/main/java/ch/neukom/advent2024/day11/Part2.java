@@ -1,10 +1,13 @@
 package ch.neukom.advent2024.day11;
 
 import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
+import ch.neukom.advent2024.util.math.MathHelper;
 import ch.neukom.advent2024.util.splitter.Splitters;
 import com.google.common.collect.Maps;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -35,16 +38,17 @@ public class Part2 {
         if (cache.containsKey(cacheKey)) {
             return cache.get(cacheKey);
         } else {
-            String stoneString = String.valueOf(stone);
+            int digitCount = MathHelper.digitCount(stone);
             Long count = 0L;
             if (blinks == MAX_BLINKS) {
                 count = 1L;
             } else if (stone == 0) {
                 count = blink(1L, blinks + 1, cache);
-            } else if (stoneString.length() % 2 == 0) {
-                long left = Long.parseLong(stoneString.substring(0, stoneString.length() / 2));
+            } else if (digitCount % 2 == 0) {
+                BigDecimal scaledValue = BigDecimal.valueOf(stone).movePointLeft(digitCount / 2);
+                long left = scaledValue.setScale(0, RoundingMode.FLOOR).longValue();
                 count += blink(left, blinks + 1, cache);
-                long right = Long.parseLong(stoneString.substring(stoneString.length() / 2));
+                long right = scaledValue.subtract(BigDecimal.valueOf(left)).movePointRight(digitCount / 2).longValue();
                 count += blink(right, blinks + 1, cache);
             } else {
                 count = blink(stone * 2024, blinks + 1, cache);

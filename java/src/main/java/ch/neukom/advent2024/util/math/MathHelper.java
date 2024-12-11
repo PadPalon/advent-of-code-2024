@@ -11,4 +11,8 @@ public class MathHelper {
         BigInteger absProduct = left.multiply(right).abs();
         return absProduct.divide(gcd);
     }
+
+    public static int digitCount(double number) {
+        return (int) Math.floor(Math.log10(number)) + 1;
+    }
 }
