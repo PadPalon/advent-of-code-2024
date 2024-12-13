@@ -1,7 +1,7 @@
 package ch.neukom.advent2024.util.characterMap;
 
-import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 import ch.neukom.advent2024.util.data.Position;
+import ch.neukom.advent2024.util.inputreaders.InputResourceReader;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
 
@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class CharacterMapUtil {
@@ -46,8 +47,8 @@ public class CharacterMapUtil {
 
     private static Stream<List<Position>> buildDiagonalLines(int width, int height) {
         List<Position> topLeftBottomRightDiagonal = Streams.zip(
-            IntStream.range(0, width).boxed(),
-            IntStream.range(0, height).boxed(),
+            LongStream.range(0, width).boxed(),
+            LongStream.range(0, height).boxed(),
             Position::new
         ).toList();
 

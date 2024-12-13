@@ -1,6 +1,6 @@
 package ch.neukom.advent2024.util.data;
 
-public record Position(int x, int y) {
+public record Position(long x, long y) {
     public Position move(Direction direction) {
         return switch (direction) {
             case NORTH -> new Position(x(), y() - 1);

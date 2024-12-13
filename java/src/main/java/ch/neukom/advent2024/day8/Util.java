@@ -57,8 +57,8 @@ public class Util {
                                                  Position secondAntenna,
                                                  Function<Position, Boolean> antinodeConsumer,
                                                  AntinodeCalculator handler) {
-        int horizontalDistance = Math.abs(firstAntenna.x() - secondAntenna.x());
-        int verticalDistance = Math.abs(firstAntenna.y() - secondAntenna.y());
+        long horizontalDistance = Math.abs(firstAntenna.x() - secondAntenna.x());
+        long verticalDistance = Math.abs(firstAntenna.y() - secondAntenna.y());
         if (firstAntenna.x() < secondAntenna.x() && firstAntenna.y() < secondAntenna.y()) {
             handler.handle(firstAntenna, horizontalDistance, verticalDistance, false, false, antinodeConsumer);
             handler.handle(secondAntenna, horizontalDistance, verticalDistance, true, true, antinodeConsumer);
@@ -75,8 +75,8 @@ public class Util {
     }
 
     public static Boolean collectAntinode(Position sourceAntenna,
-                                          int horizontalDistance,
-                                          int verticalDistance,
+                                          long horizontalDistance,
+                                          long verticalDistance,
                                           boolean right,
                                           boolean bottom,
                                           Function<Position, Boolean> antinodeConsumer) {
@@ -88,8 +88,8 @@ public class Util {
     }
 
     public static void collectRepeatedAntinodes(Position sourceAntenna,
-                                                int horizontalDistance,
-                                                int verticalDistance,
+                                                long horizontalDistance,
+                                                long verticalDistance,
                                                 boolean right,
                                                 boolean bottom,
                                                 Function<Position, Boolean> antinodeConsumer) {
@@ -111,8 +111,8 @@ public class Util {
     @FunctionalInterface
     public interface AntinodeCalculator {
         void handle(Position sourceAntenna,
-                    int horizontalDistance,
-                    int verticalDistance,
+                    long horizontalDistance,
+                    long verticalDistance,
                     boolean right,
                     boolean bottom,
                     Function<Position, Boolean> antinodeConsumer);
