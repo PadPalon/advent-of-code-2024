@@ -8,6 +8,7 @@ import com.google.common.collect.Streams;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
@@ -79,16 +80,21 @@ public class CharacterMapUtil {
 
     public static <T> Map<Position, T> buildCharacterMap(InputResourceReader reader,
                                                          Function<Character, T> transformer) {
-        int height = (int) reader.getLineCount();
-        int width = reader.getFirstLine().length();
-
         List<String> lines = reader.readInput().toList();
+        return buildCharacterMap(lines, ((position, character) -> transformer.apply(character)));
+    }
+
+    public static <T> Map<Position, T> buildCharacterMap(List<String> lines,
+                                                         BiFunction<Position, Character, T> transformer) {
+        int height = lines.size();
+        int width = lines.getFirst().length();
         Map<Position, T> characterMap = Maps.newHashMap();
         for (int y = 0; y < height; y++) {
             String line = lines.get(y);
             for (int x = 0; x < width; x++) {
                 Character character = line.charAt(x);
-                characterMap.put(new Position(x, y), transformer.apply(character));
+                Position position = new Position(x, y);
+                characterMap.put(position, transformer.apply(position, character));
             }
         }
         return characterMap;
