@@ -4,6 +4,7 @@ import ch.neukom.advent2024.util.characterMap.CharacterMapUtil;
 import ch.neukom.advent2024.util.data.Position;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class InputMapReader extends InputResourceReader {
@@ -20,6 +21,10 @@ public class InputMapReader extends InputResourceReader {
     }
 
     public <T> Map<Position, T> readIntoMap(Function<Character, T> transformer) {
+        return CharacterMapUtil.buildCharacterMap(this, transformer);
+    }
+
+    public <T> Map<Position, T> readIntoMap(BiFunction<Position, Character, T> transformer) {
         return CharacterMapUtil.buildCharacterMap(this, transformer);
     }
 }

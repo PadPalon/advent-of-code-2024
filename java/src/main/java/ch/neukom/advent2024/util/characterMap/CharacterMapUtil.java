@@ -80,8 +80,13 @@ public class CharacterMapUtil {
 
     public static <T> Map<Position, T> buildCharacterMap(InputResourceReader reader,
                                                          Function<Character, T> transformer) {
+        return buildCharacterMap(reader, ((position, character) -> transformer.apply(character)));
+    }
+
+    public static <T> Map<Position, T> buildCharacterMap(InputResourceReader reader,
+                                                         BiFunction<Position, Character, T> transformer) {
         List<String> lines = reader.readInput().toList();
-        return buildCharacterMap(lines, ((position, character) -> transformer.apply(character)));
+        return buildCharacterMap(lines, transformer);
     }
 
     public static <T> Map<Position, T> buildCharacterMap(List<String> lines,
